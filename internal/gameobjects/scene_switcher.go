@@ -25,6 +25,6 @@ func (g *SceneSwitcher) Update() {
 	log.Println(1)
 	if rl.IsKeyPressed(rl.KeySpace) {
 		log.Println(2)
-		game.Instance.UpdateScene(g.NextScene)
+		game.Instance.LoadScene(g.NextScene)
 	}
 }

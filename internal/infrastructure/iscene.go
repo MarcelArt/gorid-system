@@ -15,7 +15,7 @@ func BaseUpdate(s IScene, render func()) {
 	render()
 
 	for _, gameObject := range s.GetGameObjects() {
-		go gameObject.Update()
+		gameObject.Update()
 	}
 
 	rl.EndDrawing()

@@ -44,7 +44,7 @@ func (g *Game) Start() {
 	}
 }
 
-func (g *Game) UpdateScene(scene infrastructure.SceneConstructor) {
+func (g *Game) LoadScene(scene infrastructure.SceneConstructor) {
 	log.Println(3)
 	g.ActiveScene = scene()
 }

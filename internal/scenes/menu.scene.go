@@ -3,6 +3,7 @@ package scenes
 import (
 	"log"
 
+	"github.com/MarcelArt/gorid-system/internal/game"
 	"github.com/MarcelArt/gorid-system/internal/gameobjects"
 	"github.com/MarcelArt/gorid-system/internal/infrastructure"
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -18,7 +19,7 @@ func NewMenuScene() infrastructure.IScene {
 		Rect: rl.NewRectangle(300, 200, 200, 50),
 		Text: "New Game",
 		OnClick: func() {
-			log.Println("New game clicked")
+			game.Instance.LoadScene(NewFlappyScene)
 		},
 	}
 	settingsBtn := &gameobjects.Button{
