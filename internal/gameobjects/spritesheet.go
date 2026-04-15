@@ -8,6 +8,7 @@ import (
 type Spritesheet struct {
 	Texture  rl.Texture2D
 	TileSize rl.Vector2
+	Scale    float32
 }
 
 func (g *Spritesheet) Start() {
@@ -29,7 +30,44 @@ func (g *Spritesheet) DrawTile(tileIndex int, pos rl.Vector2) {
 		Height: g.TileSize.Y,
 	}
 
-	rl.DrawTextureRec(g.Texture, source, pos, rl.White)
+	dest := rl.Rectangle{
+		X:      pos.X,
+		Y:      pos.Y,
+		Width:  g.TileSize.X * g.Scale,
+		Height: g.TileSize.Y * g.Scale,
+	}
+
+	origin := rl.Vector2{X: 0, Y: 0}
+
+	rl.DrawTexturePro(g.Texture, source, dest, origin, 0, rl.White)
 }
 
 var _ infrastructure.IGameObject = &Spritesheet{}
+
+// Builders
+type SpritesheetBuilder struct {
+	Spritesheet Spritesheet
+}
+
+func NewSpritesheetBuilder(path string) *SpritesheetBuilder {
+	return &SpritesheetBuilder{
+		Spritesheet: Spritesheet{
+			Texture: rl.LoadTexture(path),
+			Scale:   1,
+		},
+	}
+}
+
+func (b *SpritesheetBuilder) SetScale(scale float32) *SpritesheetBuilder {
+	b.Spritesheet.Scale = scale
+	return b
+}
+
+func (b *SpritesheetBuilder) SetTileSize(tileSize rl.Vector2) *SpritesheetBuilder {
+	b.Spritesheet.TileSize = tileSize
+	return b
+}
+
+func (b *SpritesheetBuilder) Build() *Spritesheet {
+	return &b.Spritesheet
+}

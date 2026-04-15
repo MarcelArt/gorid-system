@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	scene := scenes.NewFlappyScene()
-	// scene := scenes.NewMenuScene()
+	// scene := scenes.NewFlappyScene()
+	scene := scenes.NewMenuScene()
 
 	game.InitGame(scene)
 	game.Instance.Start()

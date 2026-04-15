@@ -17,7 +17,9 @@ func NewFlappyScene() infrastructure.IScene {
 			X: 16,
 			Y: 16,
 		},
+		Scale: 3,
 	}
+	rl.SetTextureFilter(birdSpritesheet.Texture, rl.FilterPoint)
 
 	flappyBird := &gameobjects.FlappyBird{
 		Position: rl.Vector2{
