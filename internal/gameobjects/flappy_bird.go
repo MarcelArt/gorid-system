@@ -10,6 +10,7 @@ const jumpForce = 400
 type FlappyBird struct {
 	Position rl.Vector2
 	Velocity rl.Vector2
+	Sprite   Spritesheet
 }
 
 func (g *FlappyBird) Start() {
@@ -21,7 +22,8 @@ func (g *FlappyBird) Update() {
 		g.Velocity.Y = -jumpForce
 	}
 
-	rl.DrawRectangle(int32(g.Position.X), int32(g.Position.Y), 100, 100, rl.Blue)
+	// rl.DrawRectangle(int32(g.Position.X), int32(g.Position.Y), 100, 100, rl.Blue)
+	g.Sprite.DrawTile(0, g.Position)
 }
 
 func (g FlappyBird) GetPosition() rl.Vector2 {

@@ -11,11 +11,20 @@ type FlappyScene struct {
 }
 
 func NewFlappyScene() infrastructure.IScene {
+	birdSpritesheet := gameobjects.Spritesheet{
+		Texture: rl.LoadTexture("assets/Bird1-7.png"),
+		TileSize: rl.Vector2{
+			X: 16,
+			Y: 16,
+		},
+	}
+
 	flappyBird := &gameobjects.FlappyBird{
 		Position: rl.Vector2{
 			X: 350,
 			Y: 100,
 		},
+		Sprite: birdSpritesheet,
 	}
 	flappyBirdGravity := &gameobjects.PhysicObject{
 		Object: flappyBird,
