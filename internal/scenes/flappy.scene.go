@@ -12,15 +12,18 @@ type FlappyScene struct {
 
 func NewFlappyScene() infrastructure.IScene {
 	flappyBird, flappyBirdGravity := setupFlappyPlayer()
-	obstacle := setupObstacle()
 
-	return &FlappyScene{
+	scene := &FlappyScene{
 		GameObjects: []infrastructure.IGameObject{
 			flappyBirdGravity,
 			flappyBird,
-			obstacle,
 		},
 	}
+
+	obstacle := setupObstacle(scene)
+	scene.AddGameObject(obstacle)
+
+	return scene
 }
 
 func (s *FlappyScene) Update() {
@@ -31,6 +34,14 @@ func (s *FlappyScene) Update() {
 
 func (s *FlappyScene) GetGameObjects() []infrastructure.IGameObject {
 	return s.GameObjects
+}
+
+func (s *FlappyScene) AddGameObject(gameObject infrastructure.IGameObject) {
+	s.GameObjects = append(s.GameObjects, gameObject)
+}
+
+func (s *FlappyScene) RemoveGameObject(gameObject infrastructure.IGameObject) {
+	// TODO: implement
 }
 
 func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
@@ -63,7 +74,7 @@ func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
 	return flappyBird, flappyBirdGravity
 }
 
-func setupObstacle() *gameobjects.Obstacle {
+func setupObstacle(s *FlappyScene) *gameobjects.ObstacleSpawner {
 	obstacleSpritesheet := gameobjects.Spritesheet{
 		Texture: rl.LoadTexture("assets/PipeStyle1.png"),
 		TileSize: rl.Vector2{
@@ -73,13 +84,21 @@ func setupObstacle() *gameobjects.Obstacle {
 		Scale: 3,
 	}
 
-	return &gameobjects.Obstacle{
-		Sprite: obstacleSpritesheet,
-		Position: rl.Vector2{
-			X: 550,
-			Y: 600,
-		},
-		FreeZone:     250,
-		FreeZoneSize: 150,
+	obstacleSpawner := gameobjects.ObstacleSpawner{
+		SpawnRate: 2,
+		Scene:     s,
+		Obstacle:  gameobjects.ObstaclePrefab(obstacleSpritesheet),
 	}
+
+	return &obstacleSpawner
+
+	// return &gameobjects.Obstacle{
+	// 	Sprite: obstacleSpritesheet,
+	// 	Position: rl.Vector2{
+	// 		X: 550,
+	// 		Y: 600,
+	// 	},
+	// 	FreeZone:     250,
+	// 	FreeZoneSize: 150,
+	// }
 }
