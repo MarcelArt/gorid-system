@@ -20,10 +20,24 @@ type Obstacle struct {
 	FreeZoneSize float32
 }
 
+func LazySpawnObstacle(sprite Spritesheet) func(float32, float32) *Obstacle {
+	return func(freeZone float32, freeZoneSize float32) *Obstacle {
+		return &Obstacle{
+			Sprite:       sprite,
+			Position:     rl.Vector2{X: 550, Y: 600},
+			FreeZone:     freeZone,
+			FreeZoneSize: freeZoneSize,
+		}
+	}
+}
+
 func (g *Obstacle) Start() {
 }
 
 func (g *Obstacle) Update() {
+	dt := rl.GetFrameTime()
+	g.Position.X -= 200 * dt
+
 	// Draw bottom pipe (coming from floor up)
 	g.drawFloorPipe()
 	// Draw top pipe (coming from ceiling down)

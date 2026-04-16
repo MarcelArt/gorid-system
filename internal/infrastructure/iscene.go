@@ -9,6 +9,11 @@ type IScene interface {
 	GetGameObjects() []IGameObject
 }
 
+type MutableGameObjects interface {
+	AddGameObject(gameObject IGameObject)
+	RemoveGameObject(gameObject IGameObject)
+}
+
 func BaseUpdate(s IScene, render func()) {
 	rl.BeginDrawing()
 
