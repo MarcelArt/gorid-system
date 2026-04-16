@@ -1,7 +1,6 @@
 package gameobjects
 
 import (
-	"log"
 	"math"
 	"math/rand"
 
@@ -22,7 +21,6 @@ func (g *ObstacleSpawner) Start() {
 func (g *ObstacleSpawner) Update() {
 	screenHeight := float64(rl.GetScreenHeight())
 	rng := rand.Float64() * screenHeight
-	log.Println("rng :>> ", rng)
 	rng = math.Max(150, float64(rng))
 	rng = math.Min(rng, screenHeight-150)
 
