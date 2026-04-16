@@ -11,6 +11,29 @@ type FlappyScene struct {
 }
 
 func NewFlappyScene() infrastructure.IScene {
+	flappyBird, flappyBirdGravity := setupFlappyPlayer()
+	obstacle := setupObstacle()
+
+	return &FlappyScene{
+		GameObjects: []infrastructure.IGameObject{
+			flappyBirdGravity,
+			flappyBird,
+			obstacle,
+		},
+	}
+}
+
+func (s *FlappyScene) Update() {
+	infrastructure.BaseUpdate(s, func() {
+		rl.ClearBackground(rl.RayWhite)
+	})
+}
+
+func (s *FlappyScene) GetGameObjects() []infrastructure.IGameObject {
+	return s.GameObjects
+}
+
+func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
 	birdSpritesheet := gameobjects.Spritesheet{
 		Texture: rl.LoadTexture("assets/Bird1-7.png"),
 		TileSize: rl.Vector2{
@@ -37,20 +60,26 @@ func NewFlappyScene() infrastructure.IScene {
 		GravMult: 800,
 	}
 
-	return &FlappyScene{
-		GameObjects: []infrastructure.IGameObject{
-			flappyBirdGravity,
-			flappyBird,
+	return flappyBird, flappyBirdGravity
+}
+
+func setupObstacle() *gameobjects.Obstacle {
+	obstacleSpritesheet := gameobjects.Spritesheet{
+		Texture: rl.LoadTexture("assets/PipeStyle1.png"),
+		TileSize: rl.Vector2{
+			X: 32,
+			Y: 20,
 		},
+		Scale: 3,
 	}
-}
 
-func (s *FlappyScene) Update() {
-	infrastructure.BaseUpdate(s, func() {
-		rl.ClearBackground(rl.RayWhite)
-	})
-}
-
-func (s *FlappyScene) GetGameObjects() []infrastructure.IGameObject {
-	return s.GameObjects
+	return &gameobjects.Obstacle{
+		Sprite: obstacleSpritesheet,
+		Position: rl.Vector2{
+			X: 550,
+			Y: 600,
+		},
+		FreeZone:     250,
+		FreeZoneSize: 150,
+	}
 }
