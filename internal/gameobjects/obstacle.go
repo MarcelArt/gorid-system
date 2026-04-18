@@ -34,6 +34,10 @@ func ObstaclePrefab(sprite Spritesheet) func(float32, float32) *Obstacle {
 func (g *Obstacle) Start() {
 }
 
+func (g *Obstacle) GetPosition() rl.Vector2 {
+	return g.Position
+}
+
 func (g *Obstacle) Update() {
 	dt := rl.GetFrameTime()
 	g.Position.X -= 200 * dt
@@ -81,4 +85,16 @@ func (g *Obstacle) drawCeilingPipe() {
 	g.Sprite.DrawTile(BottomPipe, rl.Vector2{X: g.Position.X, Y: currentY})
 }
 
+func (g Obstacle) GetSize() rl.Vector2 {
+	tileWidth := g.Sprite.TileSize.X * g.Sprite.Scale
+	return rl.Vector2{X: tileWidth, Y: float32(rl.GetScreenHeight())}
+}
+
+func (g *Obstacle) OnCollision(other Collidable) {
+	// Handle collision - e.g., game over, reset, etc.
+	// For now, just print a message
+	println("Obstacle collided with bird!")
+}
+
 var _ infrastructure.IGameObject = &Obstacle{}
+var _ Collidable                 = &Obstacle{}

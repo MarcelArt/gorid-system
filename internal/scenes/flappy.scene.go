@@ -7,20 +7,32 @@ import (
 )
 
 type FlappyScene struct {
-	GameObjects []infrastructure.IGameObject
+	GameObjects      []infrastructure.IGameObject
+	CollisionSystem *gameobjects.CollisionSystem
 }
 
 func NewFlappyScene() infrastructure.IScene {
 	flappyBird, flappyBirdGravity := setupFlappyPlayer()
 
+	collisionSystem := gameobjects.NewCollisionSystem()
+
 	scene := &FlappyScene{
 		GameObjects: []infrastructure.IGameObject{
 			flappyBirdGravity,
 			flappyBird,
+			collisionSystem,
 		},
+		CollisionSystem: collisionSystem,
 	}
 
-	obstacle := setupObstacle(scene)
+	// Register bird's collider
+	birdCollider := &gameobjects.Collider{
+		Object:   flappyBird,
+		IsActive: true,
+	}
+	collisionSystem.AddCollider(birdCollider)
+
+	obstacle := setupObstacle(scene, collisionSystem)
 	scene.AddGameObject(obstacle)
 
 	return scene
@@ -74,7 +86,7 @@ func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
 	return flappyBird, flappyBirdGravity
 }
 
-func setupObstacle(s *FlappyScene) *gameobjects.ObstacleSpawner {
+func setupObstacle(s *FlappyScene, collisionSystem *gameobjects.CollisionSystem) *gameobjects.ObstacleSpawner {
 	obstacleSpritesheet := gameobjects.Spritesheet{
 		Texture: rl.LoadTexture("assets/PipeStyle1.png"),
 		TileSize: rl.Vector2{
@@ -85,9 +97,10 @@ func setupObstacle(s *FlappyScene) *gameobjects.ObstacleSpawner {
 	}
 
 	obstacleSpawner := gameobjects.ObstacleSpawner{
-		SpawnRate: 2,
-		Scene:     s,
-		Obstacle:  gameobjects.ObstaclePrefab(obstacleSpritesheet),
+		SpawnRate:       2,
+		Scene:           s,
+		Obstacle:        gameobjects.ObstaclePrefab(obstacleSpritesheet),
+		CollisionSystem: collisionSystem,
 	}
 
 	return &obstacleSpawner

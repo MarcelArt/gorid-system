@@ -42,7 +42,18 @@ func (g *FlappyBird) SetVelocity(vel rl.Vector2) {
 	g.Velocity = vel
 }
 
+func (g FlappyBird) GetSize() rl.Vector2 {
+	return rl.Vector2{X: g.Sprite.TileSize.X * g.Sprite.Scale, Y: g.Sprite.TileSize.Y * g.Sprite.Scale}
+}
+
+func (g *FlappyBird) OnCollision(other Collidable) {
+	// Handle collision - e.g., game over, reset, etc.
+	// For now, just print a message
+	println("Bird collided with obstacle!")
+}
+
 var (
 	_ infrastructure.IGameObject = &FlappyBird{}
 	_ Fallable                   = &FlappyBird{}
+	_ Collidable                 = &FlappyBird{}
 )
