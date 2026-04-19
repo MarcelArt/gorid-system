@@ -9,10 +9,11 @@ import (
 )
 
 type ObstacleSpawner struct {
-	SpawnRate float32 // in seconds
-	Scene     infrastructure.MutableGameObjects
-	timer     float32
-	Obstacle  func(freeZone float32, freeZoneSize float32) *Obstacle
+	SpawnRate       float32 // in seconds
+	Scene           infrastructure.MutableGameObjects
+	timer           float32
+	Obstacle        func(freeZone float32, freeZoneSize float32) *Obstacle
+	CollisionSystem *CollisionSystem
 }
 
 func (g *ObstacleSpawner) Start() {
@@ -26,7 +27,19 @@ func (g *ObstacleSpawner) Update() {
 
 	g.timer += rl.GetFrameTime()
 	if g.timer > g.SpawnRate {
-		g.Scene.AddGameObject(g.Obstacle(float32(rng), 150))
+		spawnedObstacle := g.Obstacle(float32(rng), 150)
+		obstacleCollider := &Collider{
+			Object: spawnedObstacle,
+			Rect: rl.NewRectangle(
+				spawnedObstacle.Position.X,
+				0,
+				float32(spawnedObstacle.Sprite.TileSize.X*spawnedObstacle.Sprite.Scale),
+				float32(screenHeight),
+			),
+		}
+		g.CollisionSystem.AddCollider(obstacleCollider)
+		g.Scene.AddGameObject(spawnedObstacle)
+		g.Scene.AddGameObject(obstacleCollider)
 		g.timer = 0
 	}
 }

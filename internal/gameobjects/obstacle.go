@@ -1,6 +1,8 @@
 package gameobjects
 
 import (
+	"log"
+
 	"github.com/MarcelArt/gorid-system/internal/infrastructure"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -18,13 +20,15 @@ type Obstacle struct {
 	Position     rl.Vector2
 	FreeZone     float32
 	FreeZoneSize float32
+	// TopPipeCollider    *ObstacleCollidablePart
+	// BottomPipeCollider *ObstacleCollidablePart
 }
 
 func ObstaclePrefab(sprite Spritesheet) func(float32, float32) *Obstacle {
 	return func(freeZone float32, freeZoneSize float32) *Obstacle {
 		return &Obstacle{
 			Sprite:       sprite,
-			Position:     rl.Vector2{X: 900, Y: 600},
+			Position:     rl.Vector2{X: 900, Y: 0},
 			FreeZone:     freeZone,
 			FreeZoneSize: freeZoneSize,
 		}
@@ -42,6 +46,14 @@ func (g *Obstacle) Update() {
 	g.drawFloorPipe()
 	// Draw top pipe (coming from ceiling down)
 	g.drawCeilingPipe()
+}
+
+func (g *Obstacle) GetPosition() rl.Vector2 {
+	return g.Position
+}
+
+func (g *Obstacle) OnCollision(other Collidable) {
+	log.Println("obstacle hit")
 }
 
 func (g *Obstacle) drawFloorPipe() {
@@ -82,3 +94,4 @@ func (g *Obstacle) drawCeilingPipe() {
 }
 
 var _ infrastructure.IGameObject = &Obstacle{}
+var _ Collidable = &Obstacle{}

@@ -11,16 +11,21 @@ type FlappyScene struct {
 }
 
 func NewFlappyScene() infrastructure.IScene {
-	flappyBird, flappyBirdGravity := setupFlappyPlayer()
+	collisionSystem := gameobjects.NewCollisionSystem(true)
+
+	flappyBird, flappyBirdGravity, birdCollider := setupFlappyPlayer()
+	collisionSystem.AddCollider(birdCollider)
 
 	scene := &FlappyScene{
 		GameObjects: []infrastructure.IGameObject{
 			flappyBirdGravity,
 			flappyBird,
+			birdCollider,
+			collisionSystem,
 		},
 	}
 
-	obstacle := setupObstacle(scene)
+	obstacle := setupObstacle(scene, collisionSystem)
 	scene.AddGameObject(obstacle)
 
 	return scene
@@ -44,7 +49,7 @@ func (s *FlappyScene) RemoveGameObject(gameObject infrastructure.IGameObject) {
 	// TODO: implement
 }
 
-func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
+func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject, *gameobjects.Collider) {
 	birdSpritesheet := gameobjects.Spritesheet{
 		Texture: rl.LoadTexture("assets/Bird1-7.png"),
 		TileSize: rl.Vector2{
@@ -71,10 +76,15 @@ func setupFlappyPlayer() (*gameobjects.FlappyBird, *gameobjects.PhysicObject) {
 		GravMult: 800,
 	}
 
-	return flappyBird, flappyBirdGravity
+	birdCollider := &gameobjects.Collider{
+		Object: flappyBird,
+		Rect:   rl.NewRectangle(flappyBird.Position.X, flappyBird.Position.Y, 48, 48),
+	}
+
+	return flappyBird, flappyBirdGravity, birdCollider
 }
 
-func setupObstacle(s *FlappyScene) *gameobjects.ObstacleSpawner {
+func setupObstacle(s *FlappyScene, collisionSystem *gameobjects.CollisionSystem) *gameobjects.ObstacleSpawner {
 	obstacleSpritesheet := gameobjects.Spritesheet{
 		Texture: rl.LoadTexture("assets/PipeStyle1.png"),
 		TileSize: rl.Vector2{
@@ -85,9 +95,10 @@ func setupObstacle(s *FlappyScene) *gameobjects.ObstacleSpawner {
 	}
 
 	obstacleSpawner := gameobjects.ObstacleSpawner{
-		SpawnRate: 2,
-		Scene:     s,
-		Obstacle:  gameobjects.ObstaclePrefab(obstacleSpritesheet),
+		SpawnRate:       2,
+		Scene:           s,
+		Obstacle:        gameobjects.ObstaclePrefab(obstacleSpritesheet),
+		CollisionSystem: collisionSystem,
 	}
 
 	return &obstacleSpawner

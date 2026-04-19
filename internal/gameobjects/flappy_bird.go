@@ -1,6 +1,8 @@
 package gameobjects
 
 import (
+	"log"
+
 	"github.com/MarcelArt/gorid-system/internal/infrastructure"
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -40,6 +42,11 @@ func (g *FlappyBird) SetPosition(pos rl.Vector2) {
 
 func (g *FlappyBird) SetVelocity(vel rl.Vector2) {
 	g.Velocity = vel
+}
+
+func (g *FlappyBird) OnCollision(other Collidable) {
+	// TODO: Handle collision
+	log.Println("bird hit")
 }
 
 var (

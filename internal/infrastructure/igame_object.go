@@ -1,6 +1,6 @@
 package infrastructure
 
 type IGameObject interface {
-	Start()
+	// Start()
 	Update()
 }
